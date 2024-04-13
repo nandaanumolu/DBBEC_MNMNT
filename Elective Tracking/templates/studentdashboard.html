@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Bapatla Engineering College</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700&display=swap" rel="stylesheet">
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{{ url_for('static', filename='lib/animate/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        .modal-content {
+            border-radius: 30px;
+            box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            border-bottom: none;
+            background-color: #007bff;
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            color: #fff;
+        }
+
+        .modal-title {
+            color: #fff;
+            font-weight: 700;
+            text-align: center;
+            width: 100%;
+        }
+
+        .modal-body {
+            color: #333;
+        }
+
+        .modal-footer {
+            border-top: none;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        .btn-primary:focus,
+        .btn-primary:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        .btn-close {
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 50%;
+            border: none;
+            width: 30px;
+            height: 30px;
+            padding: 0;
+            font-size: 14px;
+        }
+
+        .btn-close:focus,
+        .btn-close:hover {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        .table {
+            width: 100%;
+            color: #333;
+        }
+
+        .table th,
+        .table td {
+            border-top: none;
+            border-color: #dee2e6;
+        }
+
+        .table th {
+            background-color: #007bff;
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .table tbody tr:nth-child(odd) {
+            background-color: #f8f9fa;
+        }
+
+        .table tbody tr:hover {
+            background-color: #e9ecef;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 px-4 px-lg-5">
+        <a href="{{ url_for('studentdashboard') }}" class="navbar-brand d-flex align-items-center">
+            <h2 class="m-0 text-primary"><img class="img-fluid me-2" src="{{ url_for('static', filename='img/beclogo.png') }}" alt="" style="width: 45px;">Bapatla Engineering College</h2>
+        </a>
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-4 py-lg-0">
+                <a href="{{ url_for('studentdashboard') }}" class="nav-item nav-link {% if active_page == 'studentdashboard' %}active{% endif %}">Home</a>
+                <a href="{{ url_for('index') }}" class="nav-item nav-link {% if active_page == 'index' %}active{% endif %}">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+    <section class="vh-20" style="background-color: #eee;">
+        <br><br><br>
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-lg-15 col-xl-12"> <!-- Increased the size of the card column -->
+                    <div class="card text-black" style="border-radius: 25px; padding: 40px;"> <!-- Increased padding -->
+                        <div class="card-body p-md-5 p-4"> <!-- Adjusted padding -->
+                            <div class="row justify-content-center">
+                                <div class="row justify-content-center">
+                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Student Dashboard</p>
+                                    <h5>View your Electives:</h5><button id="viewElectivesBtn" class="btn btn-primary py-3 px-3 custom-btn">View Electives</button>
+                                    <h5>Register For an Elective:</h5><button id="registerElectiveBtn" class="btn btn-primary py-3 px-3 custom-btn" data-bs-toggle="modal" data-bs-target="#electiveRegistrationModal">Register for Elective</button>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <br/><br/><br/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+    </section>
+
+    <!-- Modal -->
+    <div class="modal fade" id="electivesModal" tabindex="-1" aria-labelledby="electivesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="electivesModalLabel">{{ session['username'] }}'s Electives</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="electivesTable"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <!-- Modal for Elective Registration -->
+<div class="modal fade" id="electiveRegistrationModal" tabindex="-1" aria-labelledby="electiveRegistrationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="electiveRegistrationModalLabel">Register for Electives</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-5"> <!-- Increased padding -->
+                <form method="post" action="register_elective"> <!-- Changed action to register_elective -->
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dept" class="form-label">Department</label>
+                        <input type="text" class="form-control" id="dept" name="dept" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="sem" class="form-label">Semester</label>
+                        <input type="text" class="form-control" id="sem" name="sem" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="year" class="form-label">Year</label>
+                        <input type="text" class="form-control" id="year" name="year" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="numSubjects" class="form-label">Number of Subjects</label>
+                        <input type="number" class="form-control" id="numSubjects" name="numSubjects" min="1" required>
+                    </div>
+                    <div id="subjectFields">
+                        <!-- Dynamic form fields will be generated here -->
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg">Register</button> <!-- Increased button size -->
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/wow/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/counterup/counterup.min.js') }}"></script>
+    
+    <!-- Template Javascript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+    <!-- Custom Script for AJAX Request -->
+    <script>
+        document.getElementById("viewElectivesBtn").addEventListener("click", function(event) {
+            event.preventDefault(); // Prevent default anchor behavior
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    var electives = JSON.parse(this.responseText).records;
+                    var tableHTML = "<table class='table'><thead><tr><th scope='col'>Subject Code</th><th scope='col'>Subject Name</th><th scope='col'>Semester</th></tr></thead><tbody>";
+                    electives.forEach(function(elective) {
+                        tableHTML += "<tr><td>" + elective.SUB_CODE + "</td><td>" + elective.SUB_NAME + "</td><td>" + elective.Sem + "</td></tr>";
+                    });
+                    tableHTML += "</tbody></table>";
+                    document.getElementById("electivesTable").innerHTML = tableHTML;
+                    $('#electivesModal').modal('show');
+                }
+            };
+            var regId = "{{ session['username'] }}"; // Get the student registration number from session
+            xhttp.open("GET", "/students/reg/" + regId, true);
+            xhttp.send();
+        });
+
+        document.getElementById("numSubjects").addEventListener("change", function(event) {
+        var numSubjects = parseInt(this.value);
+        var formFields = "";
+
+        for (var i = 0; i < numSubjects; i++) {
+            formFields += `
+                <div class="mb-3">
+                    <label for="subCode_${i}" class="form-label">Subject Code</label>
+                    <input type="text" class="form-control" id="subCode_${i}" name="sub_code_${i}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="subName_${i}" class="form-label">Subject Name</label>
+                    <input type="text" class="form-control" id="subName_${i}" name="sub_name_${i}" required>
+                </div>
+            `;
+        }
+
+        document.getElementById("subjectFields").innerHTML = formFields;
+    });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Bapatla Engineering College</title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <meta content="" name="keywords">
+    <meta content="" name="description">
+
+    <!-- Favicon -->
+    <link href="{{ url_for('static', filename='img/favicon.ico') }}" rel="icon">
+
+    <!-- Google Web Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500&family=Roboto:wght@500;700&display=swap" rel="stylesheet">  
+
+    <!-- Icon Font Stylesheet -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Libraries Stylesheet -->
+    <link href="{{ url_for('static', filename='lib/animate/animate.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}" rel="stylesheet">
+
+    <!-- Customized Bootstrap Stylesheet -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Template Stylesheet -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Navbar Start -->
+    <nav class="navbar navbar-expand-lg bg-white navbar-light sticky-top p-0 px-4 px-lg-5">
+        <a href="{{ url_for('index') }}" class="navbar-brand d-flex align-items-center">
+            <h2 class="m-0 text-primary"><img class="img-fluid me-2" src="{{ url_for('static', filename='img/beclogo.png') }}" alt="" style="width: 45px;">Bapatla Engineering College</h2>
+        </a>
+        <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto py-4 py-lg-0">
+                <a href="#" class="nav-item nav-link">Home</a>
+            
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Drop down</a>
+                    <div class="dropdown-menu shadow-sm m-0">
+                        <a href="#" class="dropdown-item">By Elective</a>
+                        <a href="#" class="dropdown-item">By Branch</a>
+                    
+                    </div>
+                </div>
+                <a href="{{ url_for('index') }}" class="nav-item nav-link {% if active_page == 'index' %}active{% endif %}">Logout</a>
+            </div>
+        </div>
+    </nav>
+    <!-- Navbar End -->
+
+    <section class="vh-20" style="background-color: #eee;">
+        <br><br><br>
+        <div class="container h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-lg-12 col-xl-11">
+                    <div class="card text-black" style="border-radius: 25px;">
+                        <div class="card-body p-md-5">
+                            <br/><br/><br/>
+                            <div class="row justify-content-center">
+                                <div class="col-md-10 col-lg-9 col-xl-5 order-2 order-lg-1">
+
+                                    <p class="text-center h1 fw-bold mb-5 mx-1 mx-md-4 mt-4">Admin dashboard</p>
+
+                                    <div class="container mt-5">
+                                        <div class="row">
+                                            <div class="col-md-12 ">
+                                                <h3>Enter Registration Number</h3><br/>
+                                                <input type="text" id="registrationNumber" class="form-control" placeholder="Enter value"><br/>
+                                                <button class="btn btn-primary" type="button" onclick="fetchElectives()">Fetch Electives</button>
+                                            </div>
+                                        </div>
+                                    </div>        
+                                </div>
+                                <div>
+                                    <a href="{{ url_for('addRecord') }}" class="btn btn-primary py-3 px-4 animated slideInDown">Add Record</a>
+                                </div>
+                                <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+                                    <img src="{{ url_for('static', filename='img/student.png') }}" class="img-fluid" alt="Sample image">
+                                </div>
+                            </div>
+                            <br/><br/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br/>
+    </section>
+
+    <!-- Modal -->
+    <div class="modal fade" id="electivesModal" tabindex="-1" role="dialog" aria-labelledby="electivesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content rounded-3">
+                <div class="modal-header" style="background-color: #007bff; color: #fff; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+                    <h5 class="modal-title" id="electivesModalLabel">Electives</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table id="electivesTable" class="table">
+                        <thead>
+                            <tr>
+                                <th style="color: #007bff;">Subject Code</th>
+                                <th style="color: #007bff;">Subject Name</th>
+                                <th style="color: #007bff;">Semester</th>
+                                <th style="color: #007bff;">Action</th> <!-- New column for edit action -->
+                            </tr>
+                        </thead>
+                        <tbody id="electivesBody">
+                            <!-- Electives will be displayed here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Editing Elective Details -->
+    <div class="modal fade" id="editElectiveModal" tabindex="-1" role="dialog" aria-labelledby="editElectiveModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editElectiveModalLabel">Edit Elective</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editElectiveForm" action="/update_elective" method="POST">
+                        <!-- <input type="text" id="editRegId" name="editRegId" readonly> Hidden input for Reg_Id -->
+                        <div class="mb-3">
+                            <label for="editRegId" class="form-label">Registration Id</label>
+                          <input type="text"  class="form-control" id="editRegId" name="editRegId" readonly> 
+                        </div>
+                        <div class="mb-3">
+                            <!-- <label for="editSubCode" class="form-label">Subject Code</label> -->
+                            <input type="text" class="form-control" id="editSubCode" name="editSubCode" hidden>
+                        </div>
+                        <div class="mb-3">
+                            <!-- <label for="editSubName" class="form-label">Subject Name</label> -->
+                            <input type="text" class="form-control" id="editSubName" name="editSubName" hidden>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editSem" class="form-label">Semester</label>
+                            <input type="text" class="form-control" id="editSem" name="editSem" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newSubCode" class="form-label">Subject Code</label>
+                            <input type="text" class="form-control" id="newSubCode" name="newSubCode" >
+                        </div>
+                        <div class="mb-3">
+                            <label for="newSubName" class="form-label">Subject Name</label>
+                            <input type="text" class="form-control" id="newSubName" name="newSubName" >
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="saveElective()">Save Changes</button>
+                        <!-- <button type="button" class="btn btn-danger" onclick="deleteElective()">Delete Elective</button> -->
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function fetchElectives() {
+            var registrationNumber = document.getElementById('registrationNumber').value;
+            if (registrationNumber.trim() === '') {
+                alert('Please enter a registration number.');
+                return;
+            }
+            fetch(`/students/reg/${registrationNumber}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert('An error occurred while fetching electives.');
+                    } else {
+                        displayElectives(data.records);
+                        $('#electivesModal').modal('show'); // Show the modal
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while fetching electives.');
+                });
+        }
+
+       
+    
+        function displayElectives(electives) {
+            var electivesBody = document.getElementById('electivesBody');
+            electivesBody.innerHTML = '';
+            console.log(electives);
+            electives.forEach(elective => {
+                var row = `
+                    <tr>
+                        <td>${elective.SUB_CODE}</td>
+                        <td>${elective.SUB_NAME}</td>
+                        <td>${elective.Sem}</td>
+                        <td><button class="btn btn-primary" onclick="editElective('${elective.SUB_CODE}', '${elective.SUB_NAME}', '${elective.Sem}', '${elective.Reg_Id}')">Edit</button></td>
+                    </tr>
+                `;
+                electivesBody.innerHTML += row;
+            });
+        }
+        
+        function editElective(subCode, subName, sem, regId) {
+            $('#editSubCode').val(subCode);
+            $('#editSubName').val(subName);
+            $('#editSem').val(sem);
+            $('#editRegId').val(regId);
+            $('#editElectiveModal').modal('show');
+        }
+
+        function deleteElective() {
+            if (confirm("Are you sure you want to delete this elective?")) {
+                var form = document.getElementById("editElectiveForm");
+                var formData = new FormData(form);
+                formData.append("action", "delete");
+    
+                fetch("/update_elective", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert(data.message);
+                    $('#editElectiveModal').modal('hide');
+                    location.reload(); // Reload the page to reflect changes
+                })
+                .catch(error => {
+                    console.error("There was a problem with the fetch operation:", error);
+                    alert("An error occurred. Please try again later.");
+                });
+            }
+        }
+
+        
+        function saveElective() {
+            var regId = document.getElementById('editRegId').value;
+            var subName = document.getElementById('newSubName').value;
+            var subCode = document.getElementById('newSubCode').value;
+            var oldSubName = document.getElementById('editSubName').value;
+            var oldSubCode = document.getElementById('editSubCode').value;
+            var sem = document.getElementById('editSem').value;
+
+                const formData={
+                    "Reg_Id": regId,
+                    "new_SUB_NAME": subName,
+                    "new_SUB_CODE": subCode,
+                    "old_SUB_NAME":oldSubName , 
+                    "old_SUB_CODE": oldSubCode,
+                    "Sem": sem
+                }
+            
+                fetch("/students/update_elective", {
+                    method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+                })
+                .then(response => {
+                if (!response.ok) {
+                throw new Error("Network response was not ok");
+                }
+                return response.json();
+                })
+                .then(data => {
+                alert(data.message);
+                $('#editElectiveModal').modal('hide');
+                location.reload(); // Reload the page to reflect changes
+                })
+                .catch(error => {
+                console.error("There was a problem with the fetch operation:", error);
+                alert("An error occurred. Please try again later.");
+                });
+
+                }
+
+        
+        
+        
+        $('#editElectiveForm').submit(function (event) {
+            event.preventDefault();
+            var form = $(this);
+            var url = form.attr('action');
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: form.serialize(),
+                success: function (data) {
+                    alert(data.message); // Display success message
+                    $('#editElectiveModal').modal('hide');
+                    location.reload(); // Reload the page to reflect changes
+                },
+                error: function (xhr, status, error) {
+                    alert('An error occurred while updating the elective.');
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+
+
+    </script>
+    
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/wow/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/easing/easing.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/waypoints/waypoints.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/counterup/counterup.min.js') }}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>
